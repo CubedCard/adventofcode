@@ -24,7 +24,6 @@ let players = []
 // creating a better array out of the array
 for (let i = 0; i < numberOfPlayers; i++) {
     for (let j = i; j < i + bingoCardSize; j++) {
-        let player = [];
         let text = array[j];
         let textByLine = text.split(' ');
         for (let h = 0; h < textByLine.length; h++) {
@@ -34,6 +33,12 @@ for (let i = 0; i < numberOfPlayers; i++) {
     }
 }
 
+console.log(players[46]);
+console.log(players[47]);
+console.log(players[48]);
+console.log(players[49]);
+console.log(players[50]);
+
 for (let i = 0; i < numbers.length; i++) {
     chosenNumbers.push(numbers[i]);
     for (let h = 0; h < chosenNumbers.length; h++) {
@@ -42,24 +47,52 @@ for (let i = 0; i < numbers.length; i++) {
 }
 
 function checkIfSomeoneWon(number) {
-    for (let i = 0; i < numberOfPlayers; i++) {
+    for (let i = 0; i < players.length; i++) {
         let won = true;
-        for (let h = 0; h < bingoCardSize; h++) {
-            if (parseInt(players[i][h].trim()) != number) won = false; 
+        for (let k = 0; k < players[i].length; k++) {
+            if (parseInt(players[i][k].trim()) == number) players[i][k] = "x";
+            if (players[i][k].trim() == "x");
+            else won = false; 
         }
-        if (won == true) {
-            console.log("winner!: " + i);
+        if (won) {
+            console.log("Number: " + number);
+            numbers = [];
+            return;
         }
-
         for (let l = 0; l < bingoCardSize; l++) {
-            won = true;
-            for (let h = i; h < i + bingoCardSize; h++) {
-                if (parseInt(players[h][l].trim()) != number) won = false;
+            won = 0;
+            for (let h = i; h < i + bingoCardSize && h < players.length; h++) {
+                if (players[h][l].trim() == "x") won++; 
             }
-            if (won == true) {
-                console.log("winner!: " + i);
+            if (won == 5) {
+                console.log("Number: " + number);
+                console.log(i);
+                numbers = [];
+                console.log(players[i]);
+                console.log(players[i + 1]);
+                console.log(players[i + 2]);
+                console.log(players[i + 3]);
+                console.log(players[i + 4]);
+                players = [];
+                return;
             }
         }
     }
 }
 
+function sum(index) {
+    let sum = 0;
+    for (let i = 0; i < players[index].length; i++) {
+        sum += parseInt(players[index][i].trim())
+    }
+    console.log(sum);
+}
+
+function printAll() {
+    for (let i = 0; i < players.length; i++) {
+        console.log(players[i]);
+    }
+}
+
+
+//console.log(players);
