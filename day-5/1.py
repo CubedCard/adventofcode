@@ -3,12 +3,6 @@ dot = 0
 rows, cols = (1000, 1000)
 grid = [[dot for i in range(cols)] for j in range(rows)]
 
-def printGrid():
-    print('\n'.join([''.join(['{:1}'.format(item) for item in row]) 
-        for row in grid]))
-
-text = "" 
-
 number = 0
 
 for f in open('./text.txt'):
@@ -21,6 +15,8 @@ for f in open('./text.txt'):
     y1 = int(y1.strip())
     x2 = int(x2.strip())
     y2 = int(y2.strip())
+    x1,x2 = min(x1, x2), max(x1,x2)
+    y1,y2 = min(y1, y2), max(y1,y2)
 
     if x1 == x2:
         for y in range(y1, y2 + 1):
@@ -29,10 +25,10 @@ for f in open('./text.txt'):
         for x in range(x1, x2 + 1):
             grid[y1][x] += 1
 
+# count the number of elements with a value of 2 or higher
 for row in grid:
     for item in row:
         if item >= 2:
             number += 1
 
-#printGrid()
 print(number)
