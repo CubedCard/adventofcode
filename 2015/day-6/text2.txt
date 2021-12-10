@@ -1,3 +1,5 @@
 toggle 0,0 through 999,999
-turn on 0,0 through 0,0
-turn off 0,0 through 0,1
+toggle 0,0 through 999,999
+toggle 0,0 through 999,999
+toggle 0,0 through 999,999
+turn off 0,0 through 0,0
