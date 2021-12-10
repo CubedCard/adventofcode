@@ -30,7 +30,7 @@ turn on 966,850 through 989,953
 turn off 891,543 through 914,991
 toggle 908,77 through 916,117
 turn on 576,900 through 943,934
-turn off 50,170 through 963,206
+turn off 580,170 through 963,206
 turn on 184,638 through 192,944
 toggle 940,147 through 978,730
 turn off 854,56 through 965,591
