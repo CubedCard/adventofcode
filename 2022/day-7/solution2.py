@@ -8,13 +8,16 @@ for file in open('./data.txt'):
 path = []
 size = defaultdict(int)
 
+max_size = 70000000
+min_unused = 30000000
+
 for line in terminal_output:
     if line.startswith('$'):
         if line.startswith('$ cd'):
             if '..' in line:
                 path.pop()
             else: 
-                path.append(line[4:])
+                path.append(line.split()[2])
     else:
         if line.startswith('dir'):
             continue
@@ -23,9 +26,13 @@ for line in terminal_output:
             for i in range(1, len(path)+1):
                 size['/'.join(path[:i])] += file_size
 
-ans = 0
+min_free = max_size - min_unused
+used = size['/']
+to_delete = abs(min_free - used)
+
+ans = max_size 
 for k,v in size.items():
-    if v <= 100000:
-        ans += v
+    if v > to_delete:
+        ans = min(ans, v)
 print(ans)
 
