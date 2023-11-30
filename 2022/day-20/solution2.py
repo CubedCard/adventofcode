@@ -7,7 +7,7 @@ class Node:
 cords = []
 
 for line in open('data.txt'):
-    node = Node(line.strip())
+    node = Node(int(line.strip()) * 811589153)
     cords.append(node)
     node.prev = cords[-2] if len(cords) > 1 else None
     if node.prev:
@@ -59,23 +59,24 @@ def get_1000_2000_3000(cords):
             output.append(node.data)
     return output
 
-for cord in cords:
-    steps = int(cord.data)
-    if steps > 0:
-        for i in range(steps):
-            cord.prev.next = cord.next
-            cord.next.prev = cord.prev
-            cord.prev = cord.next
-            cord.next = cord.next.next
-            cord.next.prev = cord
-            cord.prev.next = cord
-    else:
-        for i in range(abs(steps)):
-            cord.prev.next = cord.next
-            cord.next.prev = cord.prev
-            cord.next = cord.prev
-            cord.prev = cord.prev.prev
-            cord.next.prev = cord
-            cord.prev.next = cord
+for _ in range(10):
+    for cord in cords:
+        steps = cord.data
+        if steps > 0:
+            for _ in range(steps):
+                cord.prev.next = cord.next
+                cord.next.prev = cord.prev
+                cord.prev = cord.next
+                cord.next = cord.next.next
+                cord.next.prev = cord
+                cord.prev.next = cord
+        else:
+            for _ in range(abs(steps)):
+                cord.prev.next = cord.next
+                cord.next.prev = cord.prev
+                cord.next = cord.prev
+                cord.prev = cord.prev.prev
+                cord.next.prev = cord
+                cord.prev.next = cord
 
 print(sum(get_1000_2000_3000(cords)))
