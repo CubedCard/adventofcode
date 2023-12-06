@@ -1,24 +1,11 @@
-# to low: 71820
-
 import re
 import numpy as np
 
-data = open('data.txt', 'r').read()
+data = open('data.txt', 'r').read().split('\n')
 
-time_pattern = re.compile(r'Time:\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)')
-distance_pattern = re.compile(r'Distance:\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)')
-
-time_match = time_pattern.search(data)
-distance_match = distance_pattern.search(data)
-
-def getTimesAndDistances():
-    if time_match and distance_match:
-        times = list(map(int, time_match.groups()))
-        distances = list(map(int, distance_match.groups()))
-        return times, distances
-    else:
-        return [], []
-
+times_text, distances_text = data[0], data[1]
+times = [int(x) for x in re.findall(r'\d+', times_text)]
+distances = [int(x) for x in re.findall(r'\d+', distances_text)]
 
 def part1(times, distances):
     scores = []
@@ -33,7 +20,6 @@ def part1(times, distances):
     return result
 
 def part2():
-    times, distances = getTimesAndDistances()
     total_time = ''
     total_distance = ''
     for time in times:
@@ -47,6 +33,5 @@ def part2():
     return part1([total_time], [total_distance])
 
 
-times, distances = getTimesAndDistances()
 print(part1(times, distances))
 print(part2())
