@@ -10,7 +10,6 @@ roadmap = {}
 
 for line in lines:
     match = re.match(r'(\w+) = \((\w+), (\w+)\)', line)
-
     if match:
         start, left, right = match.group(1), match.group(2), match.group(3)
         roadmap[start] = (left, right)
@@ -48,17 +47,17 @@ def part1():
     return steps
 
 def part2():
-    current_nodes = [node for node in roadmap.keys() if node[-1] == 'A']
+    currents = [current for current in roadmap.keys() if current.endswith('A')]
 
-    steps_for_nodes = [0] * len(current_nodes)
-    for i, node in enumerate(current_nodes):
+    steps_for_currents = [0] * len(currents)
+    for i, node in enumerate(currents):
         for instruction in cycle(instructions):
-            steps_for_nodes[i] += 1
+            steps_for_currents[i] += 1
             node = roadmap[node][0] if instruction == 'L' else roadmap[node][1]
             if node.endswith('Z'):
                 break
 
-    return lcm_of_steps(steps_for_nodes)
+    return lcm_of_steps(steps_for_currents)
 
 print(part1())
 print(part2())
