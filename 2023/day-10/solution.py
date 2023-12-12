@@ -59,39 +59,65 @@ def follow_pipes(grid):
 
 
             if current_tile == '|':
-                current_direction = 'S' if current_direction == 'S' else 'N'
+                if current_direction == 'N' or current_direction == 'S':
+                    current_direction = 'S' if current_direction == 'S' else 'N'
+                else: 
+                    break
             elif current_tile == '-':
-                current_direction = 'W' if current_direction == 'W' else 'E'
+                if current_direction == 'E' or current_direction == 'W':
+                    current_direction = 'W' if current_direction == 'W' else 'E'
+                else:
+                    break
             elif current_tile == 'L':
-                current_direction = 'N' if current_direction == 'W' else 'E'
+                if current_direction == 'W' or current_direction == 'S':
+                    current_direction = 'N' if current_direction == 'W' else 'E'
+                else:
+                    break
             elif current_tile == 'J':
-                current_direction = 'N' if current_direction == 'E' else 'W'
+                if current_direction == 'E' or current_direction == 'S':
+                    current_direction = 'N' if current_direction == 'E' else 'W'
+                else:
+                    break
             elif current_tile == '7':
-                current_direction = 'S' if current_direction == 'E' else 'W'
+                if current_direction == 'N' or current_direction == 'E':
+                    current_direction = 'S' if current_direction == 'E' else 'W'
+                else:
+                    break
             elif current_tile == 'F':
-                current_direction = 'S' if current_direction == 'W' else 'E'
-            
+                if current_direction == 'N' or current_direction == 'W':
+                    current_direction = 'S' if current_direction == 'W' else 'E'
+                else:
+                    break
+
             current_row, current_col = move_animal(current_row, current_col, current_direction)
 
     return None
 
 
-# Follow the pipes from 'S' to 'S'
 path = follow_pipes(grid)
 
-# Print the path
-print("Path:")
 if path: 
-    for row, col in path:
-        print(grid[row][col], end='')
-    print()
-
-    print("Final Grid:")
-    for row, col in path:
-        grid[row][col] = 1
-
     index = (len(path) - 1) / 2
-    print("length: {}, Index: {}".format(len(path), int(index)))
-    print_grid(grid)
+    print('Part 1: length: {}, Index: {}'.format(len(path), int(index)))
+    
+    outside_of_path = set()
 
+    for i, line in enumerate(grid):
+        inside_of_path = False
+        up = None
+        for j, char in enumerate(line):
+            char = str(char)
+            if (i, j) in path:
+                if char in "LF":
+                    up = char == "L"
+                elif char == "|":
+                    inside_of_path = not inside_of_path
+                elif char in "7J":
+                    if char != ("J" if up else "7"):
+                        inside_of_path = not inside_of_path
+                    up = None
 
+            if not inside_of_path:
+                outside_of_path.add((i, j))
+
+    print('Part 2:', len(grid) * len(grid[0]) - len(outside_of_path | set(path)))
