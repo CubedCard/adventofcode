@@ -57,7 +57,6 @@ def follow_pipes(grid):
             if current_tile == ".":
                 break
 
-
             if current_tile == '|':
                 if current_direction == 'N' or current_direction == 'S':
                     current_direction = 'S' if current_direction == 'S' else 'N'
