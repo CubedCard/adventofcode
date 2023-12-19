@@ -1,4 +1,4 @@
-import math
+import math 
 import re
 
 workflows = []
@@ -7,7 +7,7 @@ parts_maps = []
 
 ids = ['x', 'm', 'a', 's']
 
-data = open('ex.txt', 'r').read().split('\n\n')
+data = open('data.txt', 'r').read().split('\n\n')
 
 for line in data[0].split('\n'):
     workflows.append(line.strip())
@@ -89,40 +89,40 @@ def get_parsed_data(workflow):
     if match:
         content = match.group(2)
         conditions = re.findall(r'([xmas])([<>])(\d+):([^,]+)', content)
-        parsed_data = [(condition, operator, value, result) for condition, operator, value, result in conditions]
+        parsed_data = [(condition, operator, int(value), result) for condition, operator, value, result in conditions]
         default = match.group(3)
         return parsed_data, default
 
-def part2():
-    accepted = []
-    queue = [('in', [])]
-    while queue:
-        workflow_id, conditions = queue.pop(0)
-        if workflow_id == 'A':
-            accepted.append(conditions)
-            continue
-        workflow = get_workflow(workflow_id)
-        parsed_data, default = get_parsed_data(workflow)
-        if default == 'A':
-            accepted.append(conditions)
-            continue
-        elif default == 'R':
-            continue
-        for condition, operator, value, result in parsed_data:
-            next_conditions = conditions.copy()
-            next_conditions.append((condition, operator, value))
-            queue.append((result, next_conditions))
+def replace_range(ranges, condition, item):
+    replaced_ranges = list(ranges)
+    replaced_ranges[condition] = item
+    return replaced_ranges
 
-    total = 0
-    for condition in accepted:
-        xmas_ranges = {key: [1, 4000] for key in ['x', 'm', 'a', 's']}
-        for condition_id, operator, value in condition:
-            if operator == '<':
-                xmas_ranges[condition_id][0] = int(value) - 1
-            elif operator == '>':
-                xmas_ranges[condition_id][1] = int(value) + 1
-        total += math.prod(key[1] - key[0] + 1 for key in xmas_ranges.values())
-    return total
+def part2():
+    queue = [('in', [range(1, 4001)] * 4)]
+    accepted = 0
+    while queue:
+        workflow_id, ranges = queue.pop(0)
+        if workflow_id == 'A':
+            accepted += math.prod(list(map(len, ranges)))
+            continue
+        elif workflow_id == 'R':
+            continue
+        conditions, default = get_parsed_data(get_workflow(workflow_id))
+        for condition, operator, value, result in conditions:
+            condition_index = ids.index(condition)
+            current_range = ranges[condition_index]
+            if value not in current_range:
+                continue
+            is_greater_than = operator == '>'
+            new_range = [current_range.start, value + is_greater_than, current_range.stop]
+            new_ranges = range(*new_range[:-1]), range(*new_range[1:])
+            if is_greater_than:
+                new_ranges = new_ranges[::-1]
+            queue.append((result, replace_range(ranges, condition_index, new_ranges[0])))
+            ranges[condition_index] = new_ranges[1]
+        queue.append((default, ranges))
+    return accepted
 
 
 print(f'Part 1: {part1()}')
