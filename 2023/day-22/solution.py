@@ -1,53 +1,108 @@
+# 393
+# 58440
+
 bricks = []
 
-for line in open('ex.txt'):
+for line in open('data.txt'):
     xyzs = line.strip().split('~')
     xyz1 = xyzs[0].split(',')
     xyz2 = xyzs[1].split(',')
     bricks.append((xyz1, xyz2))
 
-grid = [[['.' for x in range(10)] for y in range(3)] for z in range(3)]
+bricks.sort(key=lambda x: min(int(x[0][2]), int(x[1][2])))
 
-for i, brick in enumerate(bricks):
-    for x in range(int(brick[0][0]), int(brick[1][0])+1):
-        for y in range(int(brick[0][1]), int(brick[1][1])+1):
-            for z in range(int(brick[0][2]), int(brick[1][2])+1):
-                grid[x][y][z] = chr(i+65)
+def get_new_grid():
+    new_grid = {}
 
-def print_grids():
-    for x, _ in enumerate(grid):
-        print("Layer", x)
-        for y, _ in enumerate(grid[x]):
-            for z, _ in enumerate(grid[x][y]):
-                print(grid[x][y][z], end='')
-            print()
-        print()
+    for i, brick in enumerate(bricks):
+        x1, y1, z1 = brick[0]
+        x2, y2, z2 = brick[1]
+        for x in range(min(int(x1), int(x2)), max(int(x1), int(x2))+1):
+            for y in range(min(int(y1), int(y2)), max(int(y1), int(y2))+1):
+                for z in range(min(int(z1), int(z2)), max(int(z1), int(z2))+1):
+                    new_grid[(x, y, z)] = chr(i+65)
+    return new_grid
 
-print_grids()
+grid = get_new_grid()
 
-def move_down(brick):
+def move_down(g, brick):
     x1, y1, z1 = brick[0]
     x2, y2, z2 = brick[1]
     if int(z1) == 1:
         return False
-    for x in range(int(x1), int(x2)+1):
-        for y in range(int(y1), int(y2)+1):
-            if grid[x][y][int(z1)-1] != '.':
-                return False
-    return True
-
-for brick in bricks:
-    can_move_down = move_down(brick)
-    while can_move_down:
-        x1, y1, z1 = brick[0]
-        x2, y2, z2 = brick[1]
-        letter = grid[int(x1)][int(y1)][int(z1)]
+    if z1 == z2:
         for x in range(int(x1), int(x2)+1):
             for y in range(int(y1), int(y2)+1):
-                grid[x][y][int(z1)+1] = '.'
-                grid[x][y][int(z1)] = letter
-        brick[0][2] = str(int(z1)-1)
-        brick[1][2] = str(int(z2)-1)
-        can_move_down = move_down(brick)
+                if (x, y, int(z1) - 1) in g and g[(x, y, int(z1)-1)] != '.':
+                    return False
+    else:
+        min_z = min(int(z1), int(z2))
+        for x in range(int(x1), int(x2)+1):
+            for y in range(int(y1), int(y2)+1):
+                if (x, y, min_z-1) in g and g[(x, y, min_z-1)] != '.':
+                    return False
+    return True
 
-print_grids()
+def move_bricks(g):
+    for brick in bricks:
+        can_move_down = move_down(g, brick)
+        while can_move_down:
+            x1, y1, z1 = brick[0]
+            x2, y2, z2 = brick[1]
+            letter = g[(int(x1), int(y1), int(z1))]
+            if z1 == z2:
+                for x in range(int(x1), int(x2)+1):
+                    for y in range(int(y1), int(y2)+1):
+                        g[(x, y, int(z1))] = '.' 
+                        g[(x, y, int(z1)-1)] = letter
+            else:
+                min_z, max_z = min(int(z1), int(z2)), max(int(z1), int(z2))
+                for x in range(int(x1), int(x2)+1):
+                    for y in range(int(y1), int(y2)+1):
+                        g[(x, y, max_z)] = '.'
+                        g[(x, y, min_z-1)] = letter
+            brick[0][2] = str(int(z1)-1)
+            brick[1][2] = str(int(z2)-1)
+            can_move_down = move_down(g, brick)
+    return g
+
+grid = move_bricks(grid)
+
+def find_bricks():
+    movable = {}
+    for b, _ in enumerate(bricks):
+        grid_copy = get_new_grid()
+        char = chr(b+65)
+        for xyz in grid_copy:
+            if grid_copy[xyz] == char:
+                grid_copy[xyz] = '.'
+        movable[char] = not any([move_down(grid_copy, brick) for brick in bricks])
+    return movable
+
+def get_min_z(brick):
+    x1, y1, z1 = brick[0]
+    x2, y2, z2 = brick[1]
+    return min(int(z1), int(z2))
+
+def part2(movable):
+    total_damage = 0
+    for mov in movable:
+        grid_copy = get_new_grid()
+        for xyz in grid_copy:
+            if grid_copy[xyz] == mov:
+                grid_copy[xyz] = '.'
+        min_z_for_bricks = [get_min_z(brick) for brick in bricks]
+        move_bricks(grid_copy)
+        min_z_for_bricks_after = [get_min_z(brick) for brick in bricks]
+        for i, z in enumerate(min_z_for_bricks):
+            if z != min_z_for_bricks_after[i]:
+                total_damage += 1
+
+    return total_damage
+
+
+movable = find_bricks()
+can_be_moved = len([x for x in movable if movable[x]])
+most_damage = part2([x for x in movable if not movable[x]])
+print(f"Part 1: {can_be_moved}")
+print(f"Part 2: {most_damage}")
