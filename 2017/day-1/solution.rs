@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{self, BufRead, BufReader, Read};
+use std::io::{self, BufReader, Read};
 
 fn part_1(buffer: &str) -> u32 {
     let mut total = 0;
