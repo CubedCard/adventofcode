@@ -21,21 +21,13 @@ def check_line(line):
     return True
 
 def part_1():
-    safe = []
-    for line in reports:
-        safe.append(check_line(line))
-    return safe.count(True)
+    return [check_line(line) for line in reports].count(True)
 
 def part_2():
-    safe_reports = 0
-    for line in reports:
-        lines = itertools.combinations(line, len(line) - 1)
-        safe = []
-        for l in lines:
-            safe.append(check_line(l))
-        if sum([1 for x in safe if x]) > 0:
-            safe_reports += 1
-    return safe_reports
+    return sum([1 for line in reports if sum([1 for l in itertools.combinations(line, len(line) - 1) if (check_line(l))]) > 0])
 
 print("Part 1", part_1())
 print("Part 2", part_2())
+
+assert part_1() == 220
+assert part_2() == 296
