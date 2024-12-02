@@ -1,21 +1,15 @@
 import itertools
 
-reports = []
-
-for line in open('data.txt'):
-    reports.append(line.split())
+reports = [line.split() for line in open('data.txt')]
 
 def check_line(line):
     asc = int(line[0]) < int(line[1])
     for i in range(len(line) - 1):
-        i1 = int(line[i])
-        i2 = int(line[i + 1])
-        if asc: 
-            if i1 > i2:
-                return False
-        else:
-            if i1 < i2:
-                return False
+        i1, i2 = int(line[i]), int(line[i + 1])
+        if asc and i1 > i2:
+            return False
+        elif not asc and i1 < i2:
+            return False
         if abs(i1 - i2) > 3 or abs(i1 - i2) == 0:
             return False
     return True
