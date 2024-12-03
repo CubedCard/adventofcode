@@ -6,32 +6,17 @@ for line in open('data.txt'):
     left.append(l)
     right.append(r)
 
-
-def show():
-    for i in range(len(left)):
-        print(left[i], right[i])
+left.sort()
+right.sort()
 
 def part_1():
-    left.sort()
-    right.sort()
-
-    difference = 0
-
-    for i in range(len(left)):
-        l = left[i]
-        r = right[i]
-        difference += abs(int(l) - int(r))
-
-    return difference
+    return sum([abs(int(l) - int(right[i])) for i, l in enumerate(left)])
 
 def part_2():
-    similarity = 0
-    for i in range(len(left)):
-        l = left[i]
-        count = right.count(l)
-        similarity += count * int(l)
-
-    return similarity
+    return sum([right.count(l) * int(l) for i, l in enumerate(left)])
 
 print(f"Part 1: {part_1()}")
 print(f"Part 2: {part_2()}")
+
+assert part_1() == 2264607
+assert part_2() == 19457120
