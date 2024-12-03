@@ -6,11 +6,7 @@ def check_line(line):
     asc = int(line[0]) < int(line[1])
     for i in range(len(line) - 1):
         i1, i2 = int(line[i]), int(line[i + 1])
-        if asc and i1 > i2:
-            return False
-        elif not asc and i1 < i2:
-            return False
-        if abs(i1 - i2) > 3 or abs(i1 - i2) == 0:
+        if (asc and i1 > i2) or (not asc and i1 < i2) or (abs(i1 - i2) > 3 or abs(i1 - i2) == 0):
             return False
     return True
 
