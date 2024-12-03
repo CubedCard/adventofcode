@@ -9,30 +9,21 @@ def part_1(file):
 def part_2(file):
     input_string = open(f'{file}.txt').readline()
 
-    pattern, pattern_do, pattern_dont = r"mul\(\d{1,3},\d{1,3}\)", r"do\(\)", r"don't\(\)"
+    pattern = r"(mul\((\d{1,3}),(\d{1,3}\))|do\(\)|don't\(\))"
 
     matches = re.findall(pattern, input_string)
-    matches_do = [m.start(0) for m in re.finditer(pattern_do, input_string)]
-    matches_dont = [m.start(0) for m in re.finditer(pattern_dont, input_string)]
 
-    valid_indexes = []
-
+    result = 0
     active = True
-
-    for i in range(len(input_string)):
-        if i in matches_do:
+    for match in matches:
+        if "mul" in match[0] and active:
+            result += int(match[1]) * int(match[2][:-1])
+        elif match[0] == "do()":
             active = True
-        elif i in matches_dont:
-            active = False
+        else:
+            active = False 
 
-        if active:
-            valid_indexes.append(i)
-
-    valid_matches = [match for match in matches if input_string.find(match) in valid_indexes]
-
-    mul_pattern = r"mul\((\d{1,3}),(\d{1,3})\)"
-    return sum([sum(int(a) * int(b) for a, b in re.findall(mul_pattern, match)) for match in valid_matches])
-
+    return result
 
 print(f'Part 1: {part_1("data")}')
 print(f'Example Part 1: {part_1("ex")}')
