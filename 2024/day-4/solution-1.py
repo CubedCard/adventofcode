@@ -11,40 +11,15 @@ def get_horizontal_strings(grid):
 def get_diagonal_strings(grid):
     diagonals = []
 
-    for col in range(len(grid[0])):
+    for row, col, dx, dy in [(0, c, 1, 1) for c in range(len(grid[0]))] + \
+                           [(r, 0, 1, 1) for r in range(1, len(grid))] + \
+                           [(0, c, 1, -1) for c in range(len(grid[0]))] + \
+                           [(r, len(grid[0]) - 1, 1, -1) for r in range(1, len(grid))]:
         diagonal = []
-        x, y = 0, col
-        while x < len(grid) and y < len(grid[0]):
+        x, y = row, col
+        while 0 <= x < len(grid) and 0 <= y < len(grid[0]):
             diagonal.append(grid[x][y])
-            x += 1
-            y += 1
-        diagonals.append(''.join(diagonal))
-
-    for row in range(1, len(grid)):
-        diagonal = []
-        x, y = row, 0
-        while x < len(grid) and y < len(grid[0]):
-            diagonal.append(grid[x][y])
-            x += 1
-            y += 1
-        diagonals.append(''.join(diagonal))
-
-    for col in range(len(grid[0])):
-        diagonal = []
-        x, y = 0, col
-        while x < len(grid) and y >= 0:
-            diagonal.append(grid[x][y])
-            x += 1
-            y -= 1
-        diagonals.append(''.join(diagonal))
-
-    for row in range(1, len(grid)):
-        diagonal = []
-        x, y = row, len(grid[0]) - 1
-        while x < len(grid) and y >= 0:
-            diagonal.append(grid[x][y])
-            x += 1
-            y -= 1
+            x, y = x + dx, y + dy
         diagonals.append(''.join(diagonal))
 
     return diagonals
