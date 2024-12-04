@@ -2,19 +2,15 @@ import re
 
 grid = [line.strip() for line in open('data.txt')]
 
-# Function to get vertical strings
 def get_vertical_strings(grid):
     return [''.join(grid[row][col] for row in range(len(grid))) for col in range(len(grid[0]))]
 
-# Function to get horizontal strings
 def get_horizontal_strings(grid):
     return grid
 
-# Function to get diagonal strings
 def get_diagonal_strings(grid):
     diagonals = []
 
-    # Get diagonals from top-left to bottom-right
     for col in range(len(grid[0])):
         diagonal = []
         x, y = 0, col
@@ -33,7 +29,6 @@ def get_diagonal_strings(grid):
             y += 1
         diagonals.append(''.join(diagonal))
 
-    # Get diagonals from top-right to bottom-left
     for col in range(len(grid[0])):
         diagonal = []
         x, y = 0, col
@@ -54,7 +49,6 @@ def get_diagonal_strings(grid):
 
     return diagonals
 
-# Get vertical, horizontal and diagonal strings
 vertical_strings = get_vertical_strings(grid)
 horizontal_strings = get_horizontal_strings(grid)
 diagonal_strings = get_diagonal_strings(grid)
