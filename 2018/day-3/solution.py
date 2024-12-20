@@ -8,11 +8,6 @@ grid = [[[] for _ in range(grid_size)] for _ in range(grid_size)]
 regex = r"#(\d+) @ (\d+),(\d+): (\d+)x(\d+)"
 matches = re.findall(regex, data)
 
-def print_grid():
-    for x in grid:
-        print("\t".join(x))
-    print()
-
 for match in matches:
     n, x, y, w, h = [int(k) for k in match]
     for i in range(w):
