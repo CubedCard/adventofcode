@@ -1,16 +1,15 @@
+from functools import reduce
+
 def process_number(x):
     modulo = 16777216
 
-    result = x * 64
-    x ^= result
+    x ^= (x * 64) % modulo
     x %= modulo
 
-    result = x // 32
-    x ^= result
+    x ^= (x // 32) % modulo
     x %= modulo
 
-    result = x * 2048
-    x ^= result
+    x ^= (x * 2048) % modulo
     x %= modulo
 
     return x
@@ -52,19 +51,13 @@ def calculate_pattern_scores(data, sequence_length):
     return pattern_scores
 
 def part_1(data):
-    total = 0
-    for num in data:
-        cur = int(num)
-        for _ in range(2000):
-            cur = process_number(cur)
-        total += cur
-    return total
+    return sum([reduce(lambda x, _: process_number(x), range(2000), int(num)) for num in data])
+
+def part_2(data):
+    return max(calculate_pattern_scores(data, 2000).values())
 
 if __name__ == "__main__":
     data = [int(line.strip()) for line in open('data.txt')]
 
-    pattern_scores = calculate_pattern_scores(data, 2000)
-    max_score = max(pattern_scores.values())
-
     print(f"Part 1: {part_1(data)}")
-    print(f"Part 2: {max_score}")
+    print(f"Part 2: {part_2(data)}")
