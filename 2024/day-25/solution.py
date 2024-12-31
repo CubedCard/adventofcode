@@ -25,7 +25,6 @@ def part_1(file="data.txt"):
     lock_heights = [get_heights(lock, is_lock=True) for lock in lock_schematics]
     key_heights = [get_heights(key, is_lock=False) for key in key_schematics]
 
-
     return len(find_compatible_locks_and_keys(lock_heights, key_heights))
 
 print(f"Part 1: {part_1()}")
